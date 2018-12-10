@@ -26,12 +26,12 @@
     * [deeptools*](#deeptools*)
 * [FileFormat](#FileFormat)
 	* [general](#general)
-		* [fastq & fasta](#fastq & fasta)
-		* [bam & sam](#bam & sam)
-		* [bed & bedgraph](#bed & bedgraph)
-		* [wig & bigwig](#wig & bigwig)
-		* [bcf & vcf](#bcf & vcf)
-		* [gff & gtf](#gff & gtf)
+		* [fastq-fasta](#fastq-fasta)
+		* [bam-sam](#bam-sam)
+		* [bed-bedgraph](#bed-bedgraph)
+		* [wig-bigwig](#wig-bigwig)
+		* [bcf-vcf](#bcf-vcf)
+		* [gf-gtf](#gf-gtf)
 	* [manipulation](#manipulation)
 		* [samtools*](#samtools*)
 		* [bedtools*](#bedtools*)
@@ -404,27 +404,27 @@ _2.fq". 测序文件中的reads的长度可以不一样。
 
 &emsp;&emsp;下面总结的一些格式文件，在[Genome browser FAQ](https://genome.ucsc.edu/FAQ/FAQformat.html#format1.7)都能够找到，下面的还有一些更详细或更适合参考信息及说明。
 
-##### fastq & fasta
+##### fastq-fasta
 
 &emsp;&emsp;两种储存sequence的格式，参考[Fasta和Fastq详解](https://zhuanlan.zhihu.com/p/20714540)
 
-##### bam & sam
+##### bam-sam
 
 &emsp;&emsp;BAM是目前基因数据分析中最通用的**比对数据存储格式**，它既适合于短read也适合于长read，最长可以支持128Mbp的超大read！除了后缀是.bam之外，可能还会看到.cram，甚至.sam后缀的文件，其实它们一个是BAM的高压缩格式(.cram)——IO效率比原来的BAM要略差；另一个是BAM的纯文本格式（.sam）。[理解并操作BAM文件](https://zhuanlan.zhihu.com/p/31405418),[如何使用Python处理BAM](https://zhuanlan.zhihu.com/p/31625187)
 
-##### bed & bedgraph
+##### bed-bedgraph
 
 &emsp;&emsp;BED 文件格式提供了一种灵活的方式来定义的数据行，**以用来描述注释的信息，BED行有3个必须的列和9个额外可选的列**，每行的数据格式要求一致。一般peaks文件是bed格式。[bed格式详解](https://zhuanlan.zhihu.com/p/27876814)，[bed格式的四种形式](https://zhuanlan.zhihu.com/p/49560007)
 
-##### wig & bigwig
+##### wig-bigwig
 
 &emsp;&emsp;&emsp;Wiggle、BigWig和bedgraph仅仅用于追踪参考基因组的各个区域的覆盖度，测序深度。与sam/bam格式文件不同，bam或者bed格式的文件主要是为了追踪我们的reads到底比对到了参考基因组的哪些区域。注意这几者的差别。**Wiggle、BigWig和bedgraph均由UCSC规定的文件格式，可以无缝连接到UCSC的Genome Browser工具里面进行可视化。**[Wiggle、BigWig和bedgraph](https://vip.biotrainee.com/d/169-wiggle-bigwig-bedgraph)
 
-##### bcf & vcf
+##### bcf-vcf
 
 &emsp;&emsp;VCF([Variant Call Forma](http://vcftools.sourceforge.net/specs.html))是一种文本文件格式，用于存储变异数据，最初设计用于SNP和短INDEL的存储，也是用于结构变异的存储。它包含元信息行，标题行，然后是数据行，每行包含有关基因组中位置的信息；BCF( binary variant call format)，是VCF的二进制版本，它与VCF中保留的信息相同，而对于大量样本而言，BCF处理效率更高。BCF和VCF之间的关系类似于BAM和SAM之间的关系。
 
-##### gff & gtf
+##### gff-gtf
 
 &emsp;&emsp;两种文件格式非常类似，均为9列[参考文档](https://asia.ensembl.org/info/website/upload/gff.html)：
 
