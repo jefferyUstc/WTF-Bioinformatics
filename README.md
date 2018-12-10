@@ -1,9 +1,17 @@
+****
 ## 目录
 * [Tools](#Tools)
-
-* [FileFormat](#FileFormat)
-
-* [Common-Sense](#Common-Sense)
+  * [数据下载](#数据下载)
+    * [sra-tools](#sra-tools)
+    * [gdc-tranfer-tool](#gdc-tranfer-tool)
+    * [aspera](#aspera)
+  * [辅助工具](#辅助工具)
+    * [GNU parallel](#GNU parallel)
+  * [质量控制](#质量控制)
+  * [基因组比对](#基因组比对)
+  * [峰值探测](#峰值探测)
+  * [motif分析](#motif分析)
+  * [可视化](#可视化)
 
 
 # Tools
@@ -362,7 +370,7 @@ _2.fq". 测序文件中的reads的长度可以不一样。
 
 &emsp;&emsp;deeptools就是用来对单个或者多个比对好的bam文件进行信息统计并进行可视化分析的，所以ChIP-seq和RNA-seq及其它类型的二代测序结果都是可以借以分析。[deeptools-简书](https://www.jianshu.com/p/7cc5df9f7900)
 
-# FileFomat
+# FileFormat
 
 ## general
 
