@@ -6,12 +6,40 @@
     * [gdc-tranfer-tool](#gdc-tranfer-tool)
     * [aspera](#aspera)
   * [辅助工具](#辅助工具)
-    * [GNU parallel](#GNU parallel)
+    * [GNU-parallel](#GNU-parallel)
   * [质量控制](#质量控制)
+    * [fastqc](#fastqc)
+    * [cutadapter](#cutadapter)
+    * [trim_galore](#trim_garole)
+    * [trimmomatic](#trimmomatic)
+    * [fastx-toolkit](#fastx-toolkit)
   * [基因组比对](#基因组比对)
+    * [bowtie](#bowtie)
+    * [bowtie2](#bowtie2)
+    * [bwa*](#bwa*)
+    * [STAR*](#STAR*)
   * [峰值探测](#峰值探测)
+    * [MACS2*](#MACS2*)
   * [motif分析](#motif分析)
+    * [Homer*](#Homer*)
   * [可视化](#可视化)
+    * [deeptools*](#deeptools*)
+* [FileFormat](#FileFormat)
+	* [general](#general)
+		* [fastq & fasta](#fastq & fasta)
+		* [bam & sam](#bam & sam)
+		* [bed & bedgraph](#bed & bedgraph)
+		* [wig & bigwig](#wig & bigwig)
+		* [bcf & vcf](#bcf & vcf)
+		* [gff & gtf](#gff & gtf)
+	* [manipulation](#manipulation)
+		* [samtools*](#samtools*)
+		* [bedtools*](#bedtools*)
+		* [BCFtools*](#BCFtools*)
+* [Common-Sense](#Common-Sense)
+	* [bio-database](#bio-database)
+	* [sequence-representation](#sequence-representation)
+	* [suggestion](#suggestion)
 
 
 # Tools
@@ -45,7 +73,7 @@ ascp -i ~/asperaweb_id_dsa.openssh anonftp@ftp-private.ncbi.nlm.nih.gov:/sra/sra
 
 ### 辅助工具
 
-##### GNU parallel
+##### GNU-parallel
 
 &emsp;&emsp;GNU Parallel是一个shell工具，为了在一台或多台计算机上并行的执行计算任务。通常的输入是文件列表、主机列表、用户列表、URL列表或者表格列表；一个计算任务也可以是一个从管道读取的一条命令。GNU Parallel会把输入分块，然后通过管道并行的执行。GNU Parallel保证它的输出与顺序执行计算任务时是一样的，这样就可以方便的把GNU Parallel的输出做为其它程序的输入。[官方参考](https://www.gnu.org/software/parallel/), [中文参考1](https://blog.csdn.net/huozhanfeng/article/details/38497707),[中文参考2](https://www.jianshu.com/p/c5a2369fa613)
 
