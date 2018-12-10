@@ -2,7 +2,7 @@
 
 
 
-# BioInfo-Tools
+# Tools
 
 ### 数据下载
 
@@ -112,7 +112,7 @@ $ cutadapt -q 10,15 --quality-base=33 -o output.fastq input.fastq
 
 
 
-##### trim_galore*
+##### trim_galore
 
 &emsp;&emsp;<u>Trim Galore是对FastQC和Cutadapt的包装</u>。**适用于所有高通量测序，可以自动检测adapter**，包括RRBS(Reduced Representation Bisulfite-Seq ), Illumina、Nextera 和smallRNA测序平台的双端和单端数据。[推荐一篇有趣的文章](https://www.jianshu.com/p/7a3de6b8e503)，[trim_galore](https://github.com/FelixKrueger/TrimGalore/blob/master/Docs/Trim_Galore_User_Guide.md)的主要功能包括:
 
@@ -238,11 +238,11 @@ $ fastx_trimmer [-h] [-f N] [-l N] [-z] [-v] [-i INFILE] [-o OUTFILE]
 
 ##### bowtie
 
-&emsp;&emsp;bowtie1 2009年出现的工具，对于测序长度在50bp以下的序列效果不错，而bowtie2主要针对的是长度在50bp以上的测序的，另外很重要一点，**bowtie不支持 gap open**。
+&emsp;&emsp;bowtie1 2009年出现的工具，对于测序长度在50bp以下的序列效果不错，而bowtie2主要针对的是长度在50bp以上的测序的；另外很重要一点，**bowtie不支持 gap open**，**建议一般使用bowtie2。**
 
-##### bwa
+##### bwa*
 
-
+&emsp;&emsp;BWA也是一个基因组比对的软件包。它由三种算法组成：BWA-backtrack，BWA-SW和BWA-MEM。第一种算法设计用于Illumina测序序列，最多长100bp；而其余两种用于较长序列，范围为70bp至1Mbp。BWA-MEM和BWA-SW具有相似的功能，例如支持long reads和split alignment，但最新的BWA-MEM通常被推荐用于高质量查询，因为它更快，更准确。对于70-100bp Illumina读数，BWA-MEM还具有比BWA-backtrack更好的性能。[官方文档](http://bio-bwa.sourceforge.net/bwa.shtml)
 
 ##### bowtie2
 
@@ -336,29 +336,33 @@ _2.fq". 测序文件中的reads的长度可以不一样。
      $ bcftools view eg2.raw.bcf
      ```
 
+##### STAR*
+
+&emsp;&emsp;ENCODE计划御用比对软件，也是比较权威，并且比对速度极快，一般用于RNA-Seq测序数据的比对。[官方文档](https://github.com/alexdobin/STAR/)
+
 ### 峰值探测
 
-##### MACS2
+##### MACS2*
 
 &emsp;&emsp;MACS2是peak calling最常用的工具，这是MACS2的主要功能，因为MACS2的目的就是找peak，其他功能都是可有可无，唯独`callpeak`不可取代。[MACS2](https://www.jianshu.com/p/6a975f0ea65a)
 
 ### motif分析
 
-##### Homer
+##### Homer*
 
 &emsp;&emsp;HOMER最初是为了使发现ChIP-Seq peaks富集motif的过程自动化，更一般地，HOMER分析富集motif的基因组位置，不仅限于ChIP-Seq peaks。使用homer，所有用户真正需要的是包含基因组坐标的文件（HOMER peak file or  BED file），然后HOMER会处理后续过程。[homer manual](http://homer.ucsd.edu/homer/ngs/peakMotifs.html)
 
 ### 可视化
 
-##### deeptools
+##### deeptools*
 
 &emsp;&emsp;deeptools就是用来对单个或者多个比对好的bam文件进行信息统计并进行可视化分析的，所以ChIP-seq和RNA-seq及其它类型的二代测序结果都是可以借以分析。[deeptools-简书](https://www.jianshu.com/p/7cc5df9f7900)
 
-# BioInfo-FileFomat
+# FileFomat
 
-## 格式解析
+## general
 
-[Genome browser FAQ](https://genome.ucsc.edu/FAQ/FAQformat.html#format1.7)
+&emsp;&emsp;下面总结的一些格式文件，在[Genome browser FAQ](https://genome.ucsc.edu/FAQ/FAQformat.html#format1.7)都能够找到，下面的还有一些更详细或更适合参考信息及说明。
 
 ##### fastq & fasta
 
@@ -376,35 +380,83 @@ _2.fq". 测序文件中的reads的长度可以不一样。
 
 &emsp;&emsp;&emsp;Wiggle、BigWig和bedgraph仅仅用于追踪参考基因组的各个区域的覆盖度，测序深度。与sam/bam格式文件不同，bam或者bed格式的文件主要是为了追踪我们的reads到底比对到了参考基因组的哪些区域。注意这几者的差别。**Wiggle、BigWig和bedgraph均由UCSC规定的文件格式，可以无缝连接到UCSC的Genome Browser工具里面进行可视化。**[Wiggle、BigWig和bedgraph](https://vip.biotrainee.com/d/169-wiggle-bigwig-bedgraph)
 
-##### bcf&vcf
+##### bcf & vcf
 
-##### gff
+&emsp;&emsp;VCF([Variant Call Forma](http://vcftools.sourceforge.net/specs.html))是一种文本文件格式，用于存储变异数据，最初设计用于SNP和短INDEL的存储，也是用于结构变异的存储。它包含元信息行，标题行，然后是数据行，每行包含有关基因组中位置的信息；BCF( binary variant call format)，是VCF的二进制版本，它与VCF中保留的信息相同，而对于大量样本而言，BCF处理效率更高。BCF和VCF之间的关系类似于BAM和SAM之间的关系。
 
-##### gtf
+##### gff & gtf
 
-##### MAF
+&emsp;&emsp;两种文件格式非常类似，均为9列[参考文档](https://asia.ensembl.org/info/website/upload/gff.html)：
 
-## 格式工具
+| 1                       | 2                 | 3            | 4                | 5              | 6     | 7      | 8     | 9          |
+| ----------------------- | ----------------- | ------------ | ---------------- | -------------- | ----- | ------ | ----- | ---------- |
+| reference sequence name | annotation source | feature type | start coordinate | end coordinate | score | strand | frame | attributes |
 
-##### samtools
+&emsp;&emsp;GFF(general feature format)，是一种用来描述基因组特征的文件，现在使用的大部分都是GFF3。GFF允许使用`#`作为注释符号，例如：
+
+```shell
+##gff-version 3
+##created 11/11/11
+```
+
+```shell
+# 注意观察第九列
+# ID属性是必需的
+# Parent属性，它表明了当前的特征是Parent特征的子集。
+
+Contig01  PFAM  gene  501  750  .  +  0  ID=geneA;Name=geneA
+Contig01  PFAM  exon  501  650  .  +  2  ID=exonA1;Parent=geneA
+Contig01  PFAM  exon  700  750  .  +  2  ID=exonA2;Parent=geneA
+```
+
+&emsp;&emsp;GTF(gene transfer format)，当前主流版本是GTF2，主要是用来对基因进行注释。GTF格式有两个硬性标准：
+
+- 根据所使用的软件的不同，`feature types`是必须注明的。
+
+- 第9列必须以`gene_id`以及`transcript_id`开头
+
+  ```shell
+  # 第9列示例,注意对比GFF
+  gene_id "geneA";transcript_id "geneA.1";database_id "0012";modified_by "Damian";duplicates 0;
+  ```
+
+&emsp;&emsp;差异比较：
+
+| 列                      | GTF2                                    | GFF3            |
+| ----------------------- | --------------------------------------- | --------------- |
+| reference sequence name | same                                    | same            |
+| annotation source       | same                                    | same            |
+| feature type            | feature requirements depend on software | can be anything |
+| start coordinate        | same                                    | same            |
+| 5. end coordinate       | same                                    | same            |
+| score                   | not used                                | optional        |
+| strand                  | same                                    | same            |
+| frame                   | same                                    | same            |
+| attributes              | space-separator                         | `=`             |
+
+## manipulation
+
+##### samtools*
 
 &emsp;&emsp;顾名思义就是用于处理sam与bam格式的工具软件，能够实现二进制查看、格式转换、排序及合并等功能，结合sam格式中的flag、tag等信息，还可以完成比对结果的统计汇总。同时利用linux中的grep、awk等操作命令，还可以大大扩展samtools的使用范围与功能。从samtools还分离出一个**专门用于处理高通量数据的API——htslib**。[Sam、Bam、Cram格式详解](https://zhuanlan.zhihu.com/p/31405418)，[pysam处理sam数据](https://zhuanlan.zhihu.com/p/31625187)，[Samtools命令详解](https://www.jianshu.com/p/15f3499a6469)，[samtools Mannual](http://www.htslib.org/doc/samtools.html)。特别的，当文件还比较小的情况，关于查看bam数据，我们可以使用[IGV工具](http://software.broadinstitute.org/software/igv/)。
 
-##### bedtools
+##### bedtools*
 
 &emsp;&emsp;BEDTools是可用于genomic features的比较，相关操作及进行注释的工具。而genomic features通常使用Browser Extensible Data (BED) 或者 General Feature Format (GFF)文件表示，用UCSC Genome Browser进行可视化比较。[bedtools使用文档](https://bedtools.readthedocs.io/en/latest/index.html)， [bedtools-中文](https://blog.csdn.net/g863402758/article/details/53391354)
 
-#####  BCFtools
+#####  BCFtools*
 
-# BioInfo-DataBase
+# Common-Sense
+
+### bio-database
 
 - UCSC
 - ENSEMBL
 - NCBI
 
-# Other
+### sequence-representation
 
-- 氨基酸表示
+- Amino-Acid
 
   > ```text
   > A  alanine               P  proline       
@@ -424,7 +476,7 @@ _2.fq". 测序文件中的reads的长度可以不一样。
 
   &emsp;
 
-- 核苷酸表示
+- Nucleotide
 
   > ```text
   > A  adenosine          C  cytidine             G  guanine
@@ -437,20 +489,17 @@ _2.fq". 测序文件中的reads的长度可以不一样。
 
 &emsp;
 
-# Write_In_The_End
+### suggestion
 
-建议分析测序数据之前先搞清楚以下两个方面：
-
-- 原始数据是通过哪种测序平台产生的；它们的错误率分布是怎么样的；是否有一定的偏向性和局限性；是否会显著受GC含量的影响等；
-- 评估它们有可能影响哪些方面的分析；
-
-从以下方面认识原始测序数据：
-
-- read各个位置的碱基质量值分布
-- 碱基的总体质量值分布
-- read各个位置上碱基分布比例，目的是为了分析碱基的分离程度
-- GC含量分布
-- read各位置的N含量
-- read是否还包含测序的接头序列
-- read重复率，这个是实验的扩增过程所引入的
+1. 建议分析测序数据之前先搞清楚以下两个方面：
+   - 原始数据是通过哪种测序平台产生的；它们的错误率分布是怎么样的；是否有一定的偏向性和局限性；是否会显著受GC含量的影响等；
+   - 评估它们有可能影响哪些方面的分析；
+2. 从以下方面认识原始测序数据：
+   - read各个位置的碱基质量值分布
+   - 碱基的总体质量值分布
+   - read各个位置上碱基分布比例，目的是为了分析碱基的分离程度
+   - GC含量分布
+   - read各位置的N含量
+   - read是否还包含测序的接头序列
+   - read重复率，这个是实验的扩增过程所引入的
 
