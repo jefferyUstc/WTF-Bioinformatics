@@ -17,7 +17,8 @@
     * [bowtie](#bowtie)
     * [bowtie2](#bowtie2)
     * [bwa*](#bwa*)
-    * [STAR*](#STAR*)
+    * [STAR](#STAR)
+    * [Kallisto](Kallisto)
   * [峰值探测](#峰值探测)
     * [MACS2*](#MACS2*)
   * [motif分析](#motif分析)
@@ -25,21 +26,21 @@
   * [可视化](#可视化)
     * [deeptools*](#deeptools*)
 * [FileFormat](#FileFormat)
-	* [general](#general)
-		* [fastq-fasta](#fastq-fasta)
-		* [bam-sam](#bam-sam)
-		* [bed-bedgraph](#bed-bedgraph)
-		* [wig-bigwig](#wig-bigwig)
-		* [bcf-vcf](#bcf-vcf)
-		* [gf-gtf](#gf-gtf)
-	* [manipulation](#manipulation)
-		* [samtools](#samtools)
-		* [bedtools*](#bedtools*)
-		* [BCFtools*](#BCFtools*)
+  * [general](#general)
+    * [fastq-fasta](#fastq-fasta)
+    * [bam-sam](#bam-sam)
+    * [bed-bedgraph](#bed-bedgraph)
+    * [wig-bigwig](#wig-bigwig)
+    * [bcf-vcf](#bcf-vcf)
+    * [gf-gtf](#gf-gtf)
+  * [manipulation](#manipulation)
+    * [samtools](#samtools)
+    * [bedtools](#bedtools)
+    * [BCFtools*](#BCFtools*)
 * [Common-Sense](#Common-Sense)
-	* [bio-database](#bio-database)
-	* [sequence-representation](#sequence-representation)
-	* [suggestion](#suggestion)
+  * [bio-database](#bio-database)
+  * [sequence-representation](#sequence-representation)
+  * [suggestion](#suggestion)
 
 
 # Tools
@@ -376,9 +377,77 @@ _2.fq". 测序文件中的reads的长度可以不一样。
      $ bcftools view eg2.raw.bcf
      ```
 
-##### STAR*
+##### STAR
 
-&emsp;&emsp;ENCODE计划御用比对软件，也是比较权威，并且比对速度极快，一般用于RNA-Seq测序数据的比对。[官方文档](https://github.com/alexdobin/STAR/)
+&emsp;&emsp;ENCODE计划御用比对软件，也是比较权威，并且比对速度极快，一般用于RNA-Seq测序数据的比对。详细请参考[官方文档](https://github.com/alexdobin/STAR/)，或则[中文参考](http://www.bioinfo-scrounger.com/archives/288)以下为核心内容：
+
+- 安装
+
+  ```shell
+  # 最新版本请参考官方文档
+  wget https://github.com/alexdobin/STAR/archive/2.7.0c.tar.gz
+  tar -xzf 2.7.0c.tar.gz
+  cd STAR-2.7.0c
+  ```
+
+- 建立索引
+
+  ```shell
+  # 参数如下
+  --runThreadN NumberOfThreads
+  --runMode genomeGenerate
+  --genomeDir /path/to/genomeDir
+  --genomeFastaFiles /path/to/genome/fasta1 /path/to/genome/fasta2 ... 
+  --sjdbGTFfile /path/to/annotations.gtf
+  --sjdbOverhang ReadLength-1 
+  ```
+
+- 比对到基因组
+
+  ```shell
+  # 参数如下
+  --runThreadN NumberOfThreads
+  --genomeDir /path/to/genomeDir
+  --readFilesIn /path/to/read1 [/path/to/read2]
+  --readFilesCommand UncompressionCommand
+  --outFileNamePrefix /path/to/output/dir/prefix
+  --outSAMtype BAM SortedByCoordinate  # 输出默认排序的bam文件
+  
+  # 需要注意的是：
+  
+  # for single-end
+   --readFilesIn sample1.fq,sample2.fq,sample3.fq
+  # for pair-end
+   --readFilesIn sample1read1.fq,sample2read1.fq sample1read2.fq,sample2read2.fq 
+   
+  # outSamType
+  --outSAMtype BAM Unsorted
+  --outSAMtype BAM Unsorted SortedByCoordinate
+  ```
+
+- 输出文件
+
+  - Log Files
+
+    包括 Log.out， Log.progress.out，Log.final.out
+
+  - SAM
+
+  - Unsorted and sorted-by-coordinate BAM
+
+  - Splice junctions
+
+- two-pass比对
+
+  > &emsp;&emsp;For the most sensitive novel junction discovery,I would recommend running STAR in the 2-pass mode. **It does not increase the number of detected novel junctions, but allows to detect more splices reads mapping to novel junctions.** The basic idea is **to run 1st pass of STAR mapping with the usual parameters, then collect the junctions detected in the  rst pass, and use them as "annotated" junctions for the 2nd pass mapping.** 
+
+
+
+##### Kallisto
+
+> 论文：Near-optimal probabilistic RNA-seq quantification（http://dx.doi.org/10.1038/nbt.3519），它的优势是快速、耗费内存小，可以在普通的台式机上几分钟之内完成人或其他物种的转录组二代测序比对任务。其最大特点是不需要完整的参考基因组，只需要对某物种的全转录本序列建立索引，然后再进行pseudo alignment.他是一款 RNA-seq 数据量化软件，即从RNA-seq 的测序数据中计算出每一个基因的表达量。传统的 RNA-seq 数据分析思路分两步，第一步是把利用 RNA-seq 方法得到的测序数据先比对到参考基因组序列上（tophat2, bowtie2, HISAT, STAR等软件）；第二步是从比对结果中计算表达量，可以理解为数每一个基因的 reads 数量（Cufflinks，HTseq-count 等软件）。
+
+
 
 ### 峰值探测
 
@@ -426,7 +495,7 @@ _2.fq". 测序文件中的reads的长度可以不一样。
 
 ##### bcf-vcf
 
-&emsp;&emsp;VCF([Variant Call Forma](http://vcftools.sourceforge.net/specs.html))是一种文本文件格式，用于存储变异数据，最初设计用于SNP和短INDEL的存储，也是用于结构变异的存储。它包含元信息行，标题行，然后是数据行，每行包含有关基因组中位置的信息；BCF( binary variant call format)，是VCF的二进制版本，它与VCF中保留的信息相同，而对于大量样本而言，BCF处理效率更高。BCF和VCF之间的关系类似于BAM和SAM之间的关系。
+&emsp;&emsp;VCF([Variant Call Forma](http://vcftools.sourceforge.net/specs.html))是一种文本文件格式，用于存储变异数据，最初设计用于SNP和短INDEL的存储，也是用于结构变异的存储。它包含元信息行，标题行，然后是数据行，每行包含有关基因组中位置的信息；BCF( binary variant call format)，是VCF的二进制版本，它与VCF中保留的信息相同，而对于大量样本而言，BCF处理效率更高。BCF和VCF之间的关系类似于BAM和SAM之间的关系[中文VCF解析](https://blog.csdn.net/u012150360/article/details/70666213)。
 
 ##### gff-gtf
 
@@ -596,7 +665,7 @@ Contig01  PFAM  exon  700  750  .  +  2  ID=exonA2;Parent=geneA
   -r [chr:from-to]：选择需要统计深度的区域
   ```
 
-##### bedtools*
+##### bedtools
 
 &emsp;&emsp;BEDTools是可用于genomic features的比较，相关操作及进行注释的工具。而genomic features通常使用Browser Extensible Data (BED) 或者 General Feature Format (GFF)文件表示，用UCSC Genome Browser进行可视化比较。[bedtools使用文档](https://bedtools.readthedocs.io/en/latest/index.html)
 
