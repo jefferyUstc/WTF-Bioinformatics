@@ -10,7 +10,7 @@
   * [质量控制](#质量控制)
     * [fastqc](#fastqc)
     * [cutadapter](#cutadapter)
-    * [trim_galore](#trim_garole)
+    * [trim-galore](#trim-garole)
     * [trimmomatic](#trimmomatic)
     * [fastx-toolkit](#fastx-toolkit)
   * [基因组比对](#基因组比对)
@@ -153,7 +153,7 @@ $ cutadapt -q 10,15 --quality-base=33 -o output.fastq input.fastq
 
 
 
-##### trim_galore
+##### trim-galore
 
 &emsp;&emsp;<u>Trim Galore是对FastQC和Cutadapt的包装</u>。**适用于所有高通量测序，可以自动检测adapter**，包括RRBS(Reduced Representation Bisulfite-Seq ), Illumina、Nextera 和smallRNA测序平台的双端和单端数据。[推荐一篇有趣的文章](https://www.jianshu.com/p/7a3de6b8e503)，[trim_galore](https://github.com/FelixKrueger/TrimGalore/blob/master/Docs/Trim_Galore_User_Guide.md)的主要功能包括:
 
@@ -412,6 +412,7 @@ _2.fq". 测序文件中的reads的长度可以不一样。
   --readFilesCommand UncompressionCommand
   --outFileNamePrefix /path/to/output/dir/prefix
   --outSAMtype BAM SortedByCoordinate  # 输出默认排序的bam文件
+  --genomeLoad LoadAndKeep  # 共享内存
   
   # 需要注意的是：
   
