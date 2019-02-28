@@ -10,7 +10,7 @@
 
 - Step2— 安装kami阅读器
 
-  &emsp;不是否还在用浏览器打开PDF，你是否还在用Adobe Reader打开PDF, 如果你还在用浏览器、用edge打开，你不怕被嘲笑么？如果你用Adobe Reader打开，你不曾觉得翻页卡么？穷则思变，我这里推荐Kami阅读器：
+  &emsp;你是否还在用浏览器打开PDF，你是否还在用Adobe Reader打开PDF, 如果你还在用浏览器、用edge打开，你不怕被嘲笑么？如果你用Adobe Reader打开，你不曾觉得翻页卡么？穷则思变，我这里推荐Kami阅读器：
 
   安装方法：chrome/settings/extensions/chrome web store
 
