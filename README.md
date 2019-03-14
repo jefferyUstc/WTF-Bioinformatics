@@ -1,7 +1,7 @@
 ## 目录
 
-- [Tools](Tools)
-- [How_To_Read_Paper](ReadPaper)
+- [Tools](Tools.md)
+- [How_To_Read_Paper](ReadPaper.md)
 - [File_Format](FileFormat.md)
 - [Common-Sense](#Common-Sense)
   * [bio-database](#bio-database)
