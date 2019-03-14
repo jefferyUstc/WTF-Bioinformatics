@@ -2,7 +2,7 @@
 
 - [Tools](Tools)
 - [How_To_Read_Paper](ReadPaper)
-- [File_Format](FileFormat)
+- [File_Format](FileFormat.md)
 - [Common-Sense](#Common-Sense)
   * [bio-database](#bio-database)
   * [sequence-representation](#sequence-representation)
