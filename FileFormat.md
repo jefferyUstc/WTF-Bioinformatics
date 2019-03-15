@@ -27,7 +27,21 @@
 
 &emsp;&emsp;BAM是目前基因数据分析中最通用的**比对数据存储格式**，它既适合于短read也适合于长read，最长可以支持128Mbp的超大read！除了后缀是.bam之外，可能还会看到.cram，甚至.sam后缀的文件，其实它们一个是BAM的高压缩格式(.cram)——IO效率比原来的BAM要略差；另一个是BAM的纯文本格式（.sam）。[理解并操作BAM文件](https://zhuanlan.zhihu.com/p/31405418),[如何使用Python处理BAM](https://zhuanlan.zhihu.com/p/31625187)，[Sam、Bam、Cram格式详解](https://zhuanlan.zhihu.com/p/31405418)
 
+- header
+
+  &emsp;Header每一行都用`@` 符号开头，里面主要包含了版本信息，序列比对的参考序列信息，如果是标准工具（bwa，bowtie，picard）生成的BAM，一般还会包含生成该份文件的参数信息，如`@PG`。
+
+- record
+
+  &emsp;record每个字段之间用 `tab`符号分开，至少包含以下字段：
+
+  ![](./imgs/Longest_Common_Prefix.jpg)
+
+
+
 ![](./imgs/v2-7cc23abc51a8bbddfa22637655b31a96_hd.jpg)
+
+
 
 ![flag](./imgs/6634703-6913033c821c076f.png)
 
@@ -112,6 +126,8 @@ Contig01  PFAM  exon  700  750  .  +  2  ID=exonA2;Parent=geneA
   -H：只输出header信息
   -c：print only the count of matching records
   -S       ignored (input format is auto-detected)
+  -T, --reference FILE
+                 Reference sequence FASTA FILE [null]
   
   -f [INT]：只输出在比对flag中包含该整数的序列信息
   -F [INT]：跳过比对flag中含有该整数的序列
@@ -120,7 +136,8 @@ Contig01  PFAM  exon  700  750  .  +  2  ID=exonA2;Parent=geneA
   -@, --threads INT 线程数
   
   # 常用示例：
-  $ samtools view -bS eg2.sam > eg2.bam
+  $ samtools view -bS test.sam > test.bam
+  $ samtools view  -h test.bam > test.sam
   ```
 
 - `samtools sort`
