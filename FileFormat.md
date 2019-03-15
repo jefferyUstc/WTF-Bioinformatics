@@ -47,7 +47,134 @@
 
 ##### bed-bedgraph
 
-&emsp;&emsp;BED 文件格式提供了一种灵活的方式来定义的数据行，**以用来描述注释的信息，BED行有3个必须的列和9个额外可选的列**，每行的数据格式要求一致。一般peaks文件是bed格式。[bed格式详解](https://zhuanlan.zhihu.com/p/27876814)，[bed格式的四种形式](https://zhuanlan.zhihu.com/p/49560007)，BedToBedgraph使用代码`awk '{ print $1"\t"$2"\t"$3"\t"$5 }' summits.bed > summits.bedgraph`
+###### bed
+
+&emsp;&emsp;BED 文件格式提供了一种灵活的方式来定义的数据行，以用来描述注释信息，BED行有3个必须的列和9个额外可选的列，一般peaks文件是bed格式。请参考[bed格式详解](https://zhuanlan.zhihu.com/p/27876814)，[bed格式的四种形式](https://zhuanlan.zhihu.com/p/49560007)
+
+> If your data set is BED-like, but it is very large (over 50MB) and you would like to keep it on your own server, you should use the [bigBed](https://genome.ucsc.edu/goldenPath/help/bigBed.html) data format.
+
+- 必选行
+
+  1. chrom：染色体或scafflold 的名字(eg：chr3， chrY， chr2_random， scaffold0671 )
+  2. chromStart：染色体或scaffold的起始位置，染色体第一个碱基的位置是0
+  3. chromEnd：染色体或scaffold的结束位置，**染色体的末端位置没有包含到显示信息里面**。例如，首先得100个碱基的染色体定义为chromStart =0 . chromEnd=100, 碱基的数目是0-99
+
+- 可选行
+
+  4. name：指定BED行的名字，这个名字标签会展示在基因组浏览器中的bed行的左侧。
+
+  5. score：0到1000的分值，如果在注释数据的设定中将原始基线设置为１，那么这个分值会决定现示灰度水平（数字越大，灰度越高）
+  6. strand：定义链的方向，"+" 或者"-"
+  7. thickStart：起始位置（The starting position at which the feature is drawn thickly）(例如，基因起始编码位置）
+  8.  thickEnd：终止位置（The ending position at which the feature is drawn thickly）（例如：基因终止编码位置）
+  9. itemRGB：是一个RGB值的形式， 如( 255, 0, 0)， 如果itemRgb设置为"on", 这个RBG值将决定数据的显示的颜色。
+  10. blockCount：BED行中的block数目，也就是外显子数目
+  11. blockSize：用逗号分割的外显子的大小, 这个item的数目对应于BlockCount的数目
+  12. blockStarts：用逗号分割的列表, 所有外显子的起始位置，数目也与blockCount数目对应.
+
+举例：
+
+```
+browser position chr7:127471196-127495720
+browser hide all
+track name="ItemRGBDemo" description="Item RGB demonstration" visibility=2 itemRgb="On"
+chr7    127471196  127472363  Pos1  0  +  127471196  127472363  255,0,0
+chr7    127472363  127473530  Pos2  0  +  127472363  127473530  255,0,0
+chr7    127473530  127474697  Pos3  0  +  127473530  127474697  255,0,0
+chr7    127474697  127475864  Pos4  0  +  127474697  127475864  255,0,0
+chr7    127475864  127477031  Neg1  0  -  127475864  127477031  0,0,255
+chr7    127477031  127478198  Neg2  0  -  127477031  127478198  0,0,255
+chr7    127478198  127479365  Neg3  0  -  127478198  127479365  0,0,255
+chr7    127479365  127480532  Pos5  0  +  127479365  127480532  255,0,0
+chr7    127480532  127481699  Neg4  0  -  127480532  127481699  0,0,255
+```
+
+在UCSC GENOME BROWSER可视化：
+
+![](./imgs/hgt_genome_2fa2_ba4d60.png)
+
+###### bigbed
+
+&emsp;二进制压缩版的BED或bedgraph，压缩方式是将前三列的位置信息用二进制的索引代替，这种文件只会将目前可视化需要的数据传送到UCSC GENOME BROWSER。
+
+- bedtobigbed
+
+  ```shell
+  $ sort -k1,1 -k2,2n unsorted.bed > input.bed
+  # then, 将track、browser行去除
+  bedToBigBed input.bed chrom.sizes myBigBed.bb
+  # last，添加track行信息，如track type=bigBed name="My Big Bed" description="A Graph of Data from My Lab" bigDataUrl=http://myorg.edu/mylab/myBigBed.bb
+  ```
+
+- 其他操作
+
+  ```shell
+  # 提取信息
+  bigBedSummary
+  bigBedInfo
+  ```
+
+  
+
+###### bed detail
+
+&emsp;在BED 文件的基础上，再对每一行的区域增加更细致的文字描述，不常用，见[官方描述](<https://genome.ucsc.edu/FAQ/FAQformat.html#format1>)
+
+> 注意事项：**Requirements** for BED detail custom tracks are: fields must be tab-separated, "type=bedDetail" must be included in the [track line](https://genome.ucsc.edu/goldenPath/help/customTrack.html#TRACK)
+
+###### bedgraph
+
+&emsp;bedGraph对各个区域给出了一个连续性数据（continuous-valued data），**用于展示各个区域的表达量或对应的概率值**。
+
+> 注意事项：If you have a very large data set and you would like to keep it on your own server, you should use the [bigWig](https://genome.ucsc.edu/goldenPath/help/bigWig.html) data format.
+
+bedgraph格式如下：
+
+```
+track type=bedGraph name=track_label description=center_label
+    visibility=display_mode color=r,g,b altColor=r,g,b
+    priority=priority autoScale=on|off alwaysZero=on|off gridDefault=on|off
+    maxHeightPixels=max:default:min graphType=bar|points viewLimits=lower:upper
+    yLineMark=real-value yLineOnOff=on|off
+    windowingFunction=maximum|mean|minimum smoothingWindow=off|2-16
+    
+chromA  chromStartA  chromEndA  dataValueA
+chromB  chromStartB  chromEndB  dataValueB
+```
+
+举例：
+
+```
+browser position chr19:49302001-49304701
+browser hide all
+browser pack refGene encodeRegions
+browser full altGraph
+#	300 base wide bar graph, autoScale is on by default == graphing
+#	limits will dynamically change to always show full range of data
+#	in viewing window, priority = 20 positions this as the second graph
+#	Note, zero-relative, half-open coordinate system in use for bedGraph format
+track type=bedGraph name="BedGraph Format" description="BedGraph format" visibility=full color=200,100,0 altColor=0,100,200 priority=20
+chr19 49302000 49302300 -1.0
+chr19 49302300 49302600 -0.75
+chr19 49302600 49302900 -0.50
+chr19 49302900 49303200 -0.25
+chr19 49303200 49303500 0.0
+chr19 49303500 49303800 0.25
+chr19 49303800 49304100 0.50
+chr19 49304100 49304400 0.75
+chr19 49304400 49304700 1.00
+```
+
+
+
+![](./imgs/bedgraph_view.png)
+
+
+
+```shell
+# bed to bedgraph
+awk '{ print $1"\t"$2"\t"$3"\t"$5 }' summits.bed > summits.bedgraph
+```
 
 ##### wig-bigwig
 
@@ -198,6 +325,9 @@ Contig01  PFAM  exon  700  750  .  +  2  ID=exonA2;Parent=geneA
 
   ```shell
   $ samtools index <sorted_bam_file>
+  
+  # e.g:
+  $ samtools index abc.sort.bam abc.sort.bam.bai
   ```
 
 - `samtools tview`
