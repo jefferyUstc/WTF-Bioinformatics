@@ -25,6 +25,7 @@
     * [Homer*](#Homer*)
   * [可视化](#可视化)
     * [deeptools*](#deeptools*)
+    * [igv](#igv)
 
 
 # Tools
@@ -451,4 +452,13 @@ _2.fq". 测序文件中的reads的长度可以不一样。
 ##### deeptools*
 
 &emsp;&emsp;deeptools就是用来对单个或者多个比对好的bam文件进行信息统计并进行可视化分析的，所以ChIP-seq和RNA-seq及其它类型的二代测序结果都是可以借以分析。[deeptools-简书](https://www.jianshu.com/p/7cc5df9f7900)
+
+##### igv
+
+&emsp;[基因组数据可视化工具](<https://software.broadinstitute.org/software/igv/home>)(Integrative Genomics Viewer Tools)，其可以对`sorted BAM，BED，GTF/GFF，bigwig/wig，bedgraph`等数据进行可视化，是最常用可视化工具之一。无论是全基因组测序，RNA-Seq，ChIP-Seq等等都可以进行可视化。基本操作如下：(导入时同时需要sorted bam和bam index文件，具体操作请见[File_Format](FileFormat.md))
+
+1. 最上面的Human hg19 是选择参考基因组信息；
+2. 中间的空白部分是载入数据以后的可视化部分；
+3. 中间的空白栏是一个搜索栏，可以搜索一个基因或具体的坐标比如 chr1:10000-12000 ；
+4. 最下方的注释信息为RefSeq Genes；
 
