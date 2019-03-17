@@ -20,7 +20,7 @@
     * [STAR](#STAR)
     * [Kallisto](Kallisto)
   * [峰值探测](#峰值探测)
-    * [MACS2*](#MACS2*)
+    * [MACS2](#MACS2)
   * [motif分析](#motif分析)
     * [Homer*](#Homer*)
   * [可视化](#可视化)
@@ -437,9 +437,65 @@ _2.fq". 测序文件中的reads的长度可以不一样。
 
 ### 峰值探测
 
-##### MACS2*
+##### MACS2
 
-&emsp;&emsp;MACS2是peak calling最常用的工具，这是MACS2的主要功能，因为MACS2的目的就是找peak，其他功能都是可有可无，唯独`callpeak`不可取代。[MACS2](https://www.jianshu.com/p/6a975f0ea65a)
+&emsp;&emsp;MACS2是peak calling最常用的工具，这是MACS2的主要功能，因为MACS2的目的就是找peak，其他功能都是可有可无，唯独`callpeak`不可取代。[官方文档](<https://github.com/taoliu/MACS/>)
+
+基本用法：
+
+```shell
+# Example for regular peak calling:
+macs2 callpeak -t ChIP.bam -c Control.bam -f BAM -g hs -n test -B -q 0.01
+# Example for broad peak calling:
+macs2 callpeak -t ChIP.bam -c Control.bam --broad -g hs --broad-cutoff 0.1
+```
+
+参数如下：
+
+![](./imgs/macs2.png)
+
+- `-t`  实验组
+- `-c` 对照组
+- `-f` 文件类型，支持BAM SAM BED等，常见文件类型可以自动识别，除了"BAMPE"和"BEDPE"
+- `-g` 基因组的大小，人类基因组使用'hs'【The default hs -- 2.7e9 is recommended for UCSC human hg18 assembly】, 鼠基因组使用'mm'
+- `--outdir` 输出文件的文件路径
+- `-n`  即name，取一个有区分性有意义的名字，用于作为结果输出文件的前缀
+- `-B` 指定输出bedgraph格式的文件
+- `--verbose`  verbose模式，如果是0表示不输出过程信息
+- `-s/--tsize` 测序的读长，如果不指定，将会自动推测 
+- `--qvalue / --pvalue` q value即minimum FDR，默认cutoff值是0.05，如果指定了pvalue, 那么qvalue将会被忽略。
+- `--broad / --broad-cutoff` peak有narrow peak和broad peak之分，cutoff和qvalue相似 
+- `--nomodel` 这个参数说明不需要MACS去构建模型，双端测序不需要这个值。
+- `--extsize` 当设置了`--nomodel`时，MACS会用`--extsize`这个参数从5'->3'方向扩展reads修复fragments。比如说你的转录因子结合范围200bp，就设置这个参数是200。
+- `--shift`  当设置了`--nomodel`，MACS用这个参数从5' 端移动剪切，然后用`--extsize`延伸，如果`--shift`是负值表示从3'端方向移动。建议ChIP-seq数据集这个值保持默认值为0，对于检测富集剪切位点如DNAsel数据集设置为EXTSIZE的一半。
+
+输出结果解读：
+
+&emsp;假设我们对ATAC-seq数据进行 callpeak：`macs2 callpeak -t norm.pe.q10.sort.rmdup.shift.bed -f BED -B -g hs --outdir output -q 0.01 -n myatac --nomodel --shift 0`，结果将会得到以下文件：
+
+- `myatac_peaks.xls`
+
+  ![](./imgs/macs0001.png)
+
+- `myatac_peaks.narrowPeak`
+
+  前四行不言而喻，分别是 染色体、起始位置、结束位置、peak名称
+
+  - 5th: integer score for display calculated as `int(-10*log10qvalue)`. Please note that currently this value might be out of the [0-1000] range defined in [UCSC Encode narrowPeak format](https://genome.ucsc.edu/FAQ/FAQformat.html#format12)
+  - 7th: fold-change
+  - 8th: -log10pvalue
+  - 9th: -log10qvalue
+  - 10th: relative summit position to peak start
+
+- `myatac_summits.bed`
+
+  前四行同上，第五行是-log10pvalue
+
+  > If you want to find the motifs at the binding sites, this file is recommended
+
+- bedgraph文件—> `myatac_control_lambda.bdg`和 `myatac_treat_pileup.bdg`
+
+  这两个文件可以直接导入UCSC Browser
 
 ### motif分析
 
