@@ -178,7 +178,54 @@ awk '{ print $1"\t"$2"\t"$3"\t"$5 }' summits.bed > summits.bedgraph
 
 ##### wig-bigwig
 
-&emsp;&emsp;&emsp;Wiggle、BigWig和bedgraph仅仅用于追踪参考基因组的各个区域的覆盖度，测序深度。与sam/bam格式文件不同，bam或者bed格式的文件主要是为了追踪我们的reads到底比对到了参考基因组的哪些区域。注意这几者的差别。**Wiggle、BigWig和bedgraph均由UCSC规定的文件格式，可以无缝连接到UCSC的Genome Browser工具里面进行可视化。**[Wiggle、BigWig和bedgraph](https://vip.biotrainee.com/d/169-wiggle-bigwig-bedgraph)
+&emsp;&emsp;&emsp;Wiggle、BigWig和bedgraph（它们均由UCSC规定的文件格式，可以无缝连接到UCSC的Genome Browser工具里面进行可视化）仅仅用于追踪参考基因组的各个区域的覆盖度，测序深度；与sam/bam格式文件不同，bam或者bed格式的文件主要是为了追踪我们的reads到底比对到了参考基因组的哪些区域，更多可以请参考[官方文档](<https://genome.ucsc.edu/goldenPath/help/wiggle.html>)或[博客](<https://vip.biotrainee.com/d/169-wiggle-bigwig-bedgraph>)。
+
+- wiggle
+
+  简写为wig，**表示基因组上一个区域的信号**，可以上传至UCSC上进行可视化，一般使用MACS2峰值探测后可以产生wig格式的文件。
+
+- bigwiggle
+
+  简写为bw，**它规定了全基因组数据的每个坐标区间的测序深度**，bigWig是通过wig格式的文件转换的二进制压缩文件，是一种全基因组计算或实验信号数据的压缩的、索引的二进制格式，使用该格式更加节省空间。
+
+  > **The wiggle (WIG) format is an older format for display of dense, continuous data** such as GC percent, probability scores, and transcriptome data. **Wiggle data elements must be equally sized.** The **bedGraph format is also an older format used to display sparse data or data that contains elements of varying size.**
+
+  &emsp;
+
+  &emsp;Wig的数据是面向行的，第一行必须定义track的属性，`track type=wiggle_0`，指定track为Wig track，其余为可选参数。一般不用管这些参数，除非你已经很熟悉UCSC的Genome Browser工具。Wig中的value值可以是整数，实数，正数或者负数。只有指定的位置有value值，没有制定的位置则没有value，且不会在UCSU Genome Browser中作出图。其数据行定义方式有两种：
+
+- vriableStep
+
+  下面数据表示，在染色体chrom 2上300701-300702上的值都是12.5
+
+  ```
+  variableStep chrom=chr2
+  300701 12.5
+  300702 12.5
+  300703 12.5
+  300704 12.5
+  300705 12.5 
+  ```
+
+  其等价于：
+
+  ```
+  variableStep chrom=chr2 span=5
+  300701 12.5
+  ```
+
+- fixedStep
+
+  表示在3号染色体400601-400605, 400701-400705, and 400801-400805三个区域，value值分别为11, 22, 和 33。
+
+  ```
+  fixedStep chrom=chr3 start=400601 step=100 span=5
+  11
+  22
+  33 
+  ```
+
+> 注意事项：BigWig files created from bedGraph format use "0-start, half-open" coordinates, but bigWigs that represent variableStep and fixedStep data are generated from wiggle files that use "1-start, fully-closed" coordinates. 请具体参考[ucsc坐标系统](<http://genome.ucsc.edu/blog/the-ucsc-genome-browser-coordinate-counting-systems/>)
 
 ##### bcf-vcf
 
