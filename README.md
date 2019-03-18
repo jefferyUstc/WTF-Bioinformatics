@@ -1,8 +1,8 @@
 ## 目录
 
-- [Tools](Tools.md)
-- [How_To_Read_Paper](ReadPaper.md)
-- [File_Format](FileFormat.md)
+- [Tools](docs/Tools.md)
+- [How_To_Read_Paper](docs/ReadPaper.md)
+- [File_Format](docs/FileFormat.md)
 - [Common-Sense](#Common-Sense)
   * [bio-database](#bio-database)
   * [sequence-representation](#sequence-representation)
