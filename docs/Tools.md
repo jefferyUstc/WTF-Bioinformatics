@@ -22,7 +22,7 @@
   * [峰值探测](#峰值探测)
     * [MACS2](#MACS2)
   * [motif分析](#motif分析)
-    * [Homer*](#Homer*)
+    * [Homer](#Homer)
   * [可视化](#可视化)
     * [deeptools*](#deeptools*)
     * [igv](#igv)
@@ -499,9 +499,68 @@ macs2 callpeak -t ChIP.bam -c Control.bam --broad -g hs --broad-cutoff 0.1
 
 ### motif分析
 
-##### Homer*
+##### Homer
 
-&emsp;&emsp;HOMER最初是为了使发现ChIP-Seq peaks富集motif的过程自动化，更一般地，HOMER分析富集motif的基因组位置，不仅限于ChIP-Seq peaks。使用homer，所有用户真正需要的是包含基因组坐标的文件（HOMER peak file or  BED file），然后HOMER会处理后续过程。[homer manual](http://homer.ucsd.edu/homer/ngs/peakMotifs.html)
+&emsp;&emsp;HOMER最初是为了使发现ChIP-Seq peaks富集motif的过程自动化，更一般地，HOMER分析富集motif的基因组位置，不仅限于ChIP-Seq peaks。使用homer，所有用户真正需要的是包含基因组坐标的文件（HOMER peak file or  BED file），然后HOMER会处理后续过程。[homer motif analysis manual](<http://homer.ucsd.edu/homer/ngs/peakMotifs.html>)
+
+- 安装
+
+  [官方安装参考](<http://homer.ucsd.edu/homer/introduction/install.html>)
+
+  ```shell
+  cd /path/to/install_homer
+  wget http://homer.ucsd.edu/homer/configureHomer.pl
+  perl /Users/chucknorris/homer/configureHomer.pl -install
+  
+  # 安装你需要的参考基因组，这一步取决于网速
+  perl /path-to-homer/configureHomer.pl -install hg19
+  perl /path-to-homer/configureHomer.pl -install hg38
+  ```
+
+- 基本使用
+
+  ```shell
+  # By default this will perform de novo motif discovery as well as check the enrichment of known motifs.
+  findMotifsGenome.pl <peak/BED file> <genome> <output directory> -size # [options]
+  findMotifsGenome.pl ERpeaks.txt hg19 Output/motif/ -size 200 -mask
+  ```
+
+- 参数解析
+
+  -  `-mask`  : optional and tells the program to use the repeat-masked sequence
+  - `-size`  : 必须参数, 默认是200， 如果想用peak本身宽度，可以使用 `-size given`
+  - `-bg <peak/BED file>` ： 设置背景数据
+  - `-noweight / -nlen 0` : 关闭自动对数据的normalization
+
+- 输入文件`<peak/BED file>`
+
+  如果输入文件是peak文件，至少需要5列，分别如下：
+
+  - Column1: Unique Peak ID
+  - Column2: chromosome
+  - Column3: starting position
+  - Column4: ending position
+  - Column5: Strand (+/- or 0/1, where 0="+", 1="-")
+
+  如果输入是BED文件，至少需要六列，分别如下：
+
+  - Column1: chromosome
+  - Column2: starting position
+  - Column3: ending position
+  - Column4: Unique Peak ID
+  - Column5: not used
+  - Column6: Strand (+/- or 0/1, where 0="+", 1="-")
+
+  当然，如果你的输入文件多余上述的规定，也不要紧，程序会自动忽略。
+
+- 输出文件
+  - knownResults.html : formatted output of known motif finding.
+  - homerResults.html : formatted output of *de novo* motif finding.
+  - homerMotifs.motifs : these are the output files from the de novo motif finding, separated by motif length, and represent separate runs of the algorithm.
+  - homerMotifs.all.motifs : Simply the concatenated file composed of all the homerMotifs.motifs<#> files
+  - motifFindingParameters.txt : command used to execute findMotifsGenome.pl
+  - knownResults.txt : text file containing statistics about known motif enrichment (open in EXCEL).
+  - seq.autonorm.tsv : autonormalization statistics for lower-order oligo normalization.
 
 ### 可视化
 
