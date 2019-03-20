@@ -651,6 +651,8 @@ macs2 callpeak -t ChIP.bam -c Control.bam --broad -g hs --broad-cutoff 0.1
 
 &emsp;&emsp;HOMER最初是为了使发现ChIP-Seq peaks富集motif的过程自动化，更一般地，HOMER分析富集motif的基因组位置，不仅限于ChIP-Seq peaks。使用homer，所有用户真正需要的是包含基因组坐标的文件（HOMER peak file or  BED file），然后HOMER会处理后续过程。[homer motif analysis manual](<http://homer.ucsd.edu/homer/ngs/peakMotifs.html>)
 
+
+
 - 安装
 
   [官方安装参考](<http://homer.ucsd.edu/homer/introduction/install.html>)
@@ -722,9 +724,49 @@ macs2 callpeak -t ChIP.bam -c Control.bam --broad -g hs --broad-cutoff 0.1
   3. Calculate GC/CpG content of peak sequences
   4. Preparse the genomic sequences of the selected size to serve as background sequences.
   5. Randomly select background regions for motif discovery
-  6.  Autonormalization of sequence bias
+  6. Autonormalization of sequence bias
   7. Check enrichment of known motifs
   8. *de novo* motif finding
+
+Homer这个程序集中还包括很多其他的脚本，这里再添加几个脚本的用法：
+
+- `scanMotifGenomeWide.pl`
+
+  > To make it easier to predict motif sites across the genome, HOMER contains a program called **scanMotifGenomeWide.pl** to assist with scanning large FASTA files.
+
+  * 基本用法
+
+    ```shell
+    scanMotifGenomeWide.pl <motif file> <genome> [options] # 默认输出到stdout
+    scanMotifGenomeWide.pl ctcf.motif hg19 -bed > pu1.sites.mm9.bed
+    ```
+
+  * 其他参数
+
+    * **-bed** : 指定输出格式为bed格式
+    * **-keepAll** :默认情况下输出结果不包括自身，此选项会保留
+    * **-mask** :不在RepeatMasked sequence (lower case sequence in FASTA files)中搜寻motif
+    * **-5p** : 基于motif 序列的5'端确定其位置
+    * **-homer1** or **-homer2** : 指定使用哪个版本 (-homer2 is default)
+
+  * 输出文件
+
+    * Tab delimited text file (default):
+      1. Site ID (motif name + number)
+      2. chr
+      3. start
+      4. end
+      5. strand
+      6. log-odds score
+      7. sequence
+
+    * BED (tab) format (use **-bed**):
+      1. chr
+      2. start
+      3. end
+      4. motif name
+      5. log-odds score (will be floored to an integer)
+      6. strand
 
 ### 可视化
 
