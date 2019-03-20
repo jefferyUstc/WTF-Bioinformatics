@@ -528,9 +528,12 @@ macs2 callpeak -t ChIP.bam -c Control.bam --broad -g hs --broad-cutoff 0.1
 - 参数解析
 
   -  `-mask`  : optional and tells the program to use the repeat-masked sequence
-  - `-size`  : 必须参数, 默认是200， 如果想用peak本身宽度，可以使用 `-size given`
-  - `-bg <peak/BED file>` ： 设置背景数据
-  - `-noweight / -nlen 0` : 关闭自动对数据的normalization
+  -  `-size`  : 必须参数, 默认是200
+  -  `-bg <peak/BED file>` ： 设置背景数据
+  -  `-noweight / -nlen 0` : 关闭自动对数据的normalization
+
+  > `-size`参数是最重要的参数之一，也是许多人容易混淆的地方。如果希望根据你的Peak本身宽度来搜寻motif，请使用`-size given`，但是对于转录因子的peak，motif一般位于peak中心+/- 50-75的位置，所以用一个确切的 `-size`也许会更好。
+
 
 - 输入文件`<peak/BED file>`
 
@@ -561,6 +564,19 @@ macs2 callpeak -t ChIP.bam -c Control.bam --broad -g hs --broad-cutoff 0.1
   - motifFindingParameters.txt : command used to execute findMotifsGenome.pl
   - knownResults.txt : text file containing statistics about known motif enrichment (open in EXCEL).
   - seq.autonorm.tsv : autonormalization statistics for lower-order oligo normalization.
+
+- 程序执行步骤
+
+  Homer通过以下步骤来[搜寻高质量的motif](<http://homer.ucsd.edu/homer/ngs/peakMotifs.html>)：
+
+  1. Verify peak/BED file
+  2. Extract sequences from the genome corresponding to the regions in the input file, filtering sequences that are >70% "N"
+  3. Calculate GC/CpG content of peak sequences
+  4. Preparse the genomic sequences of the selected size to serve as background sequences.
+  5. Randomly select background regions for motif discovery
+  6.  Autonormalization of sequence bias
+  7. Check enrichment of known motifs
+  8. *de novo* motif finding
 
 ### 可视化
 
