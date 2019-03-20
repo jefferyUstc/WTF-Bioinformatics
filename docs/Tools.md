@@ -503,21 +503,7 @@ macs2 callpeak -t ChIP.bam -c Control.bam --broad -g hs --broad-cutoff 0.1
 
 &emsp;差异基因表达分析常用的R包有DESeq2，edgeR，limma等几种，目前最常用的就是DESeq2
 
-- 使用方式1-分步执行
-
-  1. estimation of size factors(`dds <- estimateSizeFactors(dds)`)
-
-      
-
-  2. estimation of spersions(`dds <- estimateDispersions(dds)`)
-
-      
-
-  3. Negative Binomial GLM fitting and Wald statistics(`dds <- nbinomWaldTest(dds)`)
-
-     
-
-- 使用方式2-一步执行
+- 使用方式1-一步执行
 
   1. 构造dds的对象
 
@@ -612,6 +598,52 @@ macs2 callpeak -t ChIP.bam -c Control.bam --broad -g hs --broad-cutoff 0.1
      # 可视化结果
      > plotMA(res, ylim=c(-2,2))
      ```
+
+- 使用方式2-分步执行
+
+  首先准备数据部分以及构建dds对象同上，我就不重复这一步工作了
+
+  1. estimation of size factors(`dds <- estimateSizeFactors(dds)`)
+
+      
+
+     ```R
+     > dds <- estimateSizeFactors(dds)
+     > count_norm=counts(dds, normalized=TRUE)  # 获取normalized之后的数据
+     > count_raw=counts(dds, normalized=F)  # 获取原始数据
+     > write.table(count_norm,file='a.txt',row.names=T,col.names=T,quote=F,sep='\t')
+     
+     > count_mat_norm=as.matrix(count_norm)
+     > log2_count_mat_norm=log2(count_mat_norm+1) 
+     > dimnames(log2_count_mat_norm)=list(row.names(counts),colnames(counts))
+     > write.table(log2_count_mat_norm,file='b.txt',row.names=T,
+                   col.names=T,quote=F,sep='\t')
+     ```
+
+     
+
+  2. estimation of spersions(`dds <- estimateDispersions(dds)`)
+
+       
+
+     ```R
+     > dds=estimateDispersions(dds,fitType="local")
+     gene-wise dispersion estimates
+     mean-dispersion relationship
+     final dispersion estimates
+     ```
+
+     
+
+  3. Negative Binomial GLM fitting and Wald statistics(`dds <- nbinomWaldTest(dds)`)
+
+  ```R
+  > dds <- nbinomWaldTest(dds)
+  > resultsNames(dds)
+  [1] "Intercept"                       "group_info_untreated_vs_treated"
+  ```
+
+&emsp;剩下的步骤也和上面方式1相同~
 
 ### motif分析
 
