@@ -497,6 +497,122 @@ macs2 callpeak -t ChIP.bam -c Control.bam --broad -g hs --broad-cutoff 0.1
 
   这两个文件可以直接导入UCSC Browser
 
+### 差异分析
+
+##### Deseq2
+
+&emsp;差异基因表达分析常用的R包有DESeq2，edgeR，limma等几种，目前最常用的就是DESeq2
+
+- 使用方式1-分步执行
+
+  1. estimation of size factors(`dds <- estimateSizeFactors(dds)`)
+
+      
+
+  2. estimation of spersions(`dds <- estimateDispersions(dds)`)
+
+      
+
+  3. Negative Binomial GLM fitting and Wald statistics(`dds <- nbinomWaldTest(dds)`)
+
+     
+
+- 使用方式2-一步执行
+
+  1. 构造dds的对象
+
+     -  准备数据
+
+     ```R
+     > library("pasilla")
+     > pasCts <- system.file("extdata",
+     +                       "pasilla_gene_counts.tsv",
+     +                       package="pasilla", mustWork=TRUE)
+     > pasAnno <- system.file("extdata",
+     +                        "pasilla_sample_annotation.csv",
+     +                        package="pasilla", mustWork=TRUE)
+     > cts <- as.matrix(read.csv(pasCts,sep="\t",row.names="gene_id"))
+     > coldata <- read.csv(pasAnno, row.names=1)
+     > data.frame(coldata[,c('condition')],row.names = row.names(coldata)) -> coldata
+     > names(coldata)<-c('group_info')
+     > coldata
+                  group_info
+     treated1fb      treated
+     treated2fb      treated
+     treated3fb      treated
+     untreated1fb  untreated
+     untreated2fb  untreated
+     untreated3fb  untreated
+     untreated4fb  untreated
+     > head(cts,1)
+                 untreated1 untreated2 untreated3 untreated4 treated1 treated2 treated3
+     FBgn0000003          0          0          0          0        0        0        1
+     > 
+     > # 处理cts和coldata一致性问题
+     > rownames(coldata) <- sub("fb", "", rownames(coldata))
+     > cts <- cts[, rownames(coldata)]
+     > coldata
+                group_info
+     treated1      treated
+     treated2      treated
+     treated3      treated
+     untreated1  untreated
+     untreated2  untreated
+     untreated3  untreated
+     untreated4  untreated
+     > head(cts,1)
+                 treated1 treated2 treated3 untreated1 untreated2 untreated3 untreated4
+     FBgn0000003        0        0        1          0          0          0          0
+     > all(rownames(coldata) == colnames(cts))
+     [1] TRUE
+     ```
+
+     - 构造dds对象
+
+     ```R
+     > suppressMessages(library("DESeq2"))
+     > dds <- DESeqDataSetFromMatrix(countData = cts,
+     +                               colData = coldata,
+     +                               design = ~ group_info)
+     > dds
+     ```
+
+     
+
+  2. 用`DESeq()`函数进行normalization处理
+
+      
+
+     ```R
+     > dds <- DESeq(dds)
+     using pre-existing size factors
+     estimating dispersions
+     found already estimated dispersions, replacing these
+     gene-wise dispersion estimates
+     mean-dispersion relationship
+     final dispersion estimates
+     fitting model and testing
+     ```
+
+     
+
+  3. 用`results()`函数来提取差异比较结果
+
+     ```R
+     > resultsNames(dds)
+     [1] "Intercept"                       "group_info_untreated_vs_treated"
+     > res<-results(dds, name='group_info_untreated_vs_treated')
+     > head(res,3)
+     > summary(res)
+     
+     # 按pvalue排序
+     > resOrdered <- res[order(res$pvalue),]
+     > head(resOrdered)
+     
+     # 可视化结果
+     > plotMA(res, ylim=c(-2,2))
+     ```
+
 ### motif分析
 
 ##### Homer
