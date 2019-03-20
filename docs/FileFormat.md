@@ -186,7 +186,7 @@ awk '{ print $1"\t"$2"\t"$3"\t"$5 }' summits.bed > summits.bedgraph
 
 - bigwiggle
 
-  简写为bw，**它规定了全基因组数据的每个坐标区间的测序深度**，bigWig是通过wig格式的文件转换的二进制压缩文件，是一种全基因组计算或实验信号数据的压缩的、索引的二进制格式，使用该格式更加节省空间。
+  &emsp;简写为bw，**它规定了全基因组数据的每个坐标区间的测序深度**，bigWig是通过wig格式的文件转换的二进制压缩文件，是一种全基因组计算或实验信号数据的压缩的、索引的二进制格式，使用该格式更加节省空间。
 
   > **The wiggle (WIG) format is an older format for display of dense, continuous data** such as GC percent, probability scores, and transcriptome data. **Wiggle data elements must be equally sized.** The **bedGraph format is also an older format used to display sparse data or data that contains elements of varying size.**
 
