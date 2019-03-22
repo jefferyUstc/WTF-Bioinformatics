@@ -6,7 +6,7 @@
     * [bam-sam](#bam-sam)
     * [bed-bedgraph](#bed-bedgraph)
     * [wig-bigwig](#wig-bigwig)
-    * [bcf-vcf](#bcf-vcf)
+    * [bcf-vcf-maf](#bcf-vcf-maf)
     * [gf-gtf](#gf-gtf)
   * [manipulation](#manipulation)
     * [samtools](#samtools)
@@ -227,9 +227,31 @@ awk '{ print $1"\t"$2"\t"$3"\t"$5 }' summits.bed > summits.bedgraph
 
 > 注意事项：BigWig files created from bedGraph format use "0-start, half-open" coordinates, but bigWigs that represent variableStep and fixedStep data are generated from wiggle files that use "1-start, fully-closed" coordinates. 请具体参考[ucsc坐标系统](<http://genome.ucsc.edu/blog/the-ucsc-genome-browser-coordinate-counting-systems/>)
 
-##### bcf-vcf
+##### bcf-vcf-maf
 
-&emsp;&emsp;VCF([Variant Call Forma](http://vcftools.sourceforge.net/specs.html))是一种文本文件格式，用于存储变异数据，最初设计用于SNP和短INDEL的存储，也是用于结构变异的存储。它包含元信息行，标题行，然后是数据行，每行包含有关基因组中位置的信息；BCF( binary variant call format)，是VCF的二进制版本，它与VCF中保留的信息相同，而对于大量样本而言，BCF处理效率更高。BCF和VCF之间的关系类似于BAM和SAM之间的关系[中文VCF解析](https://blog.csdn.net/u012150360/article/details/70666213)。
+&emsp;&emsp;VCF([Variant Call Forma](http://vcftools.sourceforge.net/specs.html))是一种文本文件格式，用于存储变异数据，最初设计用于SNP和短INDEL的存储，也是用于结构变异的存储。BCF( binary variant call format)，是VCF的二进制版本，它与VCF中保留的信息相同，而对于大量样本而言，BCF处理效率更高。BCF和VCF之间的关系类似于BAM和SAM之间的关系。
+
+- VCF format
+
+  1. 以`#`开头的注释部分
+
+     注释部分有很多对VCF的介绍信息，包括版本、来源等。
+
+  2. 数据行
+
+     - CHROM	染色体
+     - POS	染色体上的位置
+     - ID	variantID，是指如果该SNP在dbSNP数据库里面，就会有一个相应的编号；反之用`.`标记
+     - REF	参考基因组所对应的碱基，即"真实碱基"
+     - ALT 	该sample所对应的碱基，即"变异碱基"
+     - QUAL	Phred格式的质量值，越大表示该碱基变异越真实
+     - FILTER	该值对原始变异位点做再进一步过滤，如果通过，则会标注`pass`，`.`表示没有进行过任何过滤
+     - INFO 	该数据行variant信息，`key=value;key=value`形式出现
+     - Sample	样本信息
+
+- MAF format
+
+  &emsp;MAF(Mutation Annotation Format)文件是一种制表符分隔的、具有来自VCF文件聚合变异信息的一种文本文件，所谓聚合变异信息，主要是指每一个maf文件是一个project level，相比于vcf还去除了可能得生殖变异影响。MAF列数众多，具体请参考[官方文档](<https://docs.gdc.cancer.gov/Data/File_Formats/MAF_Format/>)
 
 ##### gff-gtf
 
