@@ -38,6 +38,35 @@
 
 &emsp;&emsp;SRA是NIH的高通量测序数据的主要档案，是国际核苷酸序列数据库协作（INSDC）的一部分，包括NCBI SRA，欧洲生物信息学研究所（EBI）和日本DNA数据库（DDBJ），提交给三个组织中任何一个的数据在它们之间共享。[SRA-tools-download-documentation](https://trace.ncbi.nlm.nih.gov/Traces/sra/sra.cgi?view=software)
 
+* `prefetch`
+
+  `prefetch`就是将SRA file从数据库下载到本地的基本命令，也是SRAtools中最常用的一个命令，有以下三种下载形式：
+
+  ```bash
+  prefetch [options] <path/SRA file | path/kart file> [<path/file> ...]
+  prefetch [options] <SRA accession>
+  prefetch [options] --list <kart_file>
+  ```
+
+  其中有几个参数需要注意：
+
+  * **`-X`** 该参数表示下载数据的上限（单位是KB），默认是20G, 超过20G的不下载
+  * **`-O`**该参数表示下载文件的路径
+
+* `fastq-dump`
+
+  默认下载的数据是SRR格式，我们需要将其解压缩出来，所以需要用到`fastq-dump`，有以下两种用法：
+
+  ```bash
+  fastq-dump [options] <path/file> [<path/file> ...]
+  fastq-dump [options] <accession>  # 这个相当于下载、解压一步到位
+  ```
+
+  以下几个参数需要注意：
+
+  * **`-O`**该参数表示下载文件的路径
+  * **`--split-files`** 如果是双端的话，必须注明该参数
+
 ##### gdc-tranfer-tool
 
 &emsp;&emsp;常用命令：`./gdc-client download 22a29915-6712-4f7a-8dba-985ae9a1f005`
