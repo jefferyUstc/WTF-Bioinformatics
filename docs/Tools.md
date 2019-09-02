@@ -295,9 +295,57 @@ $ fastx_trimmer [-h] [-f N] [-l N] [-z] [-v] [-i INFILE] [-o OUTFILE]
 
 &emsp;&emsp;bowtie1 2009年出现的工具，对于测序长度在50bp以下的序列效果不错，而bowtie2主要针对的是长度在50bp以上的测序的；另外很重要一点，**bowtie不支持 gap open**，**建议一般使用bowtie2。**
 
-##### bwa*
+##### bwa
 
 &emsp;&emsp;BWA也是一个基因组比对的软件包。它由三种算法组成：BWA-backtrack，BWA-SW和BWA-MEM。第一种算法设计用于Illumina测序序列，最多长100bp；而其余两种用于较长序列，范围为70bp至1Mbp。BWA-MEM和BWA-SW具有相似的功能，例如支持long reads和split alignment，但最新的BWA-MEM通常被推荐用于高质量查询，因为它更快，更准确。对于70-100bp Illumina读数，BWA-MEM还具有比BWA-backtrack更好的性能。[官方文档](http://bio-bwa.sourceforge.net/bwa.shtml)
+
+* build index
+
+  ```bash
+  $ bwa index -a bwtsw ref.fa
+  
+  # 生成以下index文件
+  $ ll
+  -rw-r--r-- 1 liunianping qukun  3088286508 Sep  2 20:06 hg38.fa.bwt
+  -rw-r--r-- 1 liunianping qukun   772071602 Sep  2 20:06 hg38.fa.pac
+  -rw-r--r-- 1 liunianping qukun         954 Sep  2 20:06 hg38.fa.ann
+  -rw-r--r-- 1 liunianping qukun       16843 Sep  2 20:06 hg38.fa.amb
+  -rw-r--r-- 1 liunianping qukun  1544143256 Sep  2 20:20 hg38.fa.sa
+  ```
+
+  这里需要注意参数`-a`, 即指定build index的算法，默认是`is`，比对人类基因组、鼠基因组一般都是使用`bwtsw`算法
+
+* mapping
+
+  `mem`算法可用于70bp-1Mbp序列的比对，简单的来讲，`mem` 使用的 MEMs(maximal exact matches） 进行seedling alignments, 再使用 SW(affine-gap Smith-Waterman 算法）进行seeding extending.
+  mem 进行局部比对，因此，对于一条序列的不同区域可能会产生多种最优匹配结果， 这对于long reads 来说尤为重要。 有些软件如 Picard’s markDuplicates 跟 mem 的这种剪接性比对不兼容, 在这种情况下，可以使用 –M 选项来将 shorter split hits 标记为次优。。目前bwa团队还更新了比`bwa mem`更先进的方法，参考[github repository](https://github.com/lh3/bwa)基本使用形式为：`bwa mem [options] ref.fa reads.fq [mates.fq]`
+
+  
+
+  > [特别说明]([http://starsyi.github.io/2016/05/24/BWA-%E5%91%BD%E4%BB%A4%E8%AF%A6%E8%A7%A3/](http://starsyi.github.io/2016/05/24/BWA-命令详解/))：
+  >
+  > * 如果 mates.fq 缺省，且参数 –p 未设定，那么 reads.fq 被认为是 single-end;
+  > * 如果 mates.fq 存在，且参数 –p 未设定，那么 `mem` 命令会认为 read.fq 和 mates.fq 中的 i-th reads 组成一个read对 (a read pair)，这个模式是常用的 paired-end mode。
+  > * 如果参数 –p 被设定，那么， mem 命令会认为 read.fq 中的 第 2i-th 和 第 (2i + 1)-th 的 reads 组成一个 read 对 （a read pair），这种方式也被成为交错式的（interleaved paired-end)。 在这种情况下，即使有 mates.fq，也会被忽略。
+
+  
+
+  ```bash
+  $ bwa mem ref.fa reads.fq > mem-se.sam
+  $ bwa mem ref.fa read1.fq read2.fq > mem-pe.sam
+  $ bwa mem -t 4 -M -R "\@RG\tID:{library}\tLB:{library}\tPL:Illumina\tPU:{sample}\tSM:{sample}\"  ref.fa read1.fastq read2.fastq > mem-pe.sam 2> ./mem-pe.log
+  ```
+
+  
+
+  - `-t INT`  线程数，默认是1。
+  - `-M`      将 shorter split hits 标记为次优，以兼容 Picard’s markDuplicates 软件。
+  - `-p`      若无此参数：输入文件只有1个，则进行单端比对；若输入文件有2个，则作为paired reads进行比对。若加入此参数：则仅以第1个文件作为输入(输入的文件若有2个，则忽略之)，该文件必须是read1.fq和read2.fa进行reads交叉的数据。
+  - `-R STR`  完整的read group的头部，可以用 '\t' 作为分隔符， 在输出的SAM文件中被解释为制表符TAB. read group 的ID，会被添加到输出文件的每一个read的头部。
+  - `-T INT`  当比对的分值比 INT 小时，不输出该比对结果，这个参数只影响输出的结果，不影响比对的过程。
+  - `-a`      将所有的比对结果都输出，包括 single-end 和 unpaired paired-end的 reads，但是这些比对的结果会被标记为次优。
+
+  
 
 ##### bowtie2
 
