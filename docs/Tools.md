@@ -16,7 +16,7 @@
   * [基因组比对](#基因组比对)
     * [bowtie](#bowtie)
     * [bowtie2](#bowtie2)
-    * [bwa*](#bwa*)
+    * [bwa](#bwa)
     * [STAR](#STAR)
     * [Kallisto](Kallisto)
   * [峰值探测](#峰值探测)
