@@ -574,7 +574,7 @@ macs2 callpeak -t ChIP.bam -c Control.bam --broad -g hs --broad-cutoff 0.1
 
   这两个文件可以直接导入UCSC Browser
   
- > 更多使用疑问，可以参考[google 讨论组](https://groups.google.com/g/macs-announcement)
+ > 更多使用疑问，可以参考[google 讨论组](https://groups.google.com/g/macs-announcement),如[pileup](https://groups.google.com/g/macs-announcement/c/c__KCotHsok)
 
 ### 差异分析
 
