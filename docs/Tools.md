@@ -573,6 +573,8 @@ macs2 callpeak -t ChIP.bam -c Control.bam --broad -g hs --broad-cutoff 0.1
 - bedgraph文件—> `myatac_control_lambda.bdg`和 `myatac_treat_pileup.bdg`
 
   这两个文件可以直接导入UCSC Browser
+  
+ > 更多使用疑问，可以参考[google 讨论组](https://groups.google.com/g/macs-announcement)
 
 ### 差异分析
 
